@@ -3,10 +3,10 @@
 import jieba
 import sys
 import getopt
-import progressbar
+import fasttext
 from sklearn.model_selection import train_test_split
 
-import config.param as param
+from config import param
 
 
 def to_train_test(data):
@@ -31,6 +31,11 @@ def cut_sentence(doc, file):
         f.flush()
 
 
+def fasttext_model(doc, model):
+    fasttext.skipgram(doc, model,
+                      dim=param.dim, ws=param.ws, min_count=param.min_count, t=param.t, thread=param.thread)
+
+
 def write_to_file(file, data):
     with open(file, 'w', encoding='utf8') as f:
         for x, y in data:
@@ -43,13 +48,22 @@ def write_to_file(file, data):
 def read_file(file):
     with open(file, 'r', encoding='utf8') as f:
         doc = f.readlines()
+        for d in doc:
+            text = d.split('\t')
+            yield (text[0], text[1])
 
-    return [(d.split('\t')[0], d.split('\t')[1]) for d in doc]
+
+
+def make_label(file, rfile):
+    doc = read_file(file)
+    with open(file, 'w', encoding='utf8') as f:
+        for d in doc:
+            f.write(d[0] + '\n')
 
 
 def select(argv):
     try:
-        opts, args = getopt.getopt(argv, 't:c:')
+        opts, args = getopt.getopt(argv, 't:c:f:l:')
     except getopt.GetoptError:
         print('error')
         sys.exit(2)
@@ -59,6 +73,10 @@ def select(argv):
             to_train_test(read_file(arg))
         elif opt == '-c':
             cut_sentence(arg, args[0])
+        elif opt == '-f':
+            fasttext_model(arg, args[0])
+        elif opt == '-l':
+            make_label(arg, args[0])
 
 
 if __name__ == "__main__":
