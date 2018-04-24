@@ -6,7 +6,7 @@ import getopt
 import fasttext
 from sklearn.model_selection import train_test_split
 
-from config import param
+
 
 
 def to_train_test(data):
@@ -48,18 +48,17 @@ def write_to_file(file, data):
 def read_file(file):
     with open(file, 'r', encoding='utf8') as f:
         doc = f.readlines()
-        for d in doc:
-            text = d.split('\t')
-            yield (text[0], text[1])
 
+    for d in doc:
+        text = d.split('\t')
+        yield (text[0], text[1])
 
 
 def make_label(file, rfile):
-    doc = read_file(file)
+    doc = read_file(rfile)
     with open(file, 'w', encoding='utf8') as f:
         for d in doc:
-            f.write(d[0] + '\n')
-
+            f.write(d[0] + '\n') 
 
 def select(argv):
     try:
