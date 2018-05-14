@@ -9,17 +9,25 @@ from sklearn.model_selection import train_test_split
 
 
 
-def to_train_test(data):
+def to_train_test(data, file1, file2, size, categories):
+    """
+    cut the date set to train and test 
+    :param data:
+    :param file1:
+    :param file2:
+    :param size:
+    :return:
+    """
     train = []
     test = []
-    for l in param.categories:
+    for l in categories:
         tmp_data = [(x, y) for x, y in data if x == l]
-        train_label, test_label = train_test_split(tmp_data, test_size=param.size)
+        train_label, test_label = train_test_split(tmp_data, test_size=size)
         train += train_label
         test += test_label
 
-    write_to_file('./PreData/train', train)
-    write_to_file('./PreData/test', test)
+    write_to_file(file1, train)
+    write_to_file(file2, test)
 
 
 def cut_sentence(doc, file):
@@ -37,6 +45,12 @@ def fasttext_model(doc, model):
 
 
 def write_to_file(file, data):
+    """
+    write data to file 
+    :param file -> string : what is write to
+    :param data -> lsit: documents 
+    :return: 
+    """
     with open(file, 'w', encoding='utf8') as f:
         for x, y in data:
             f.write(x + '\t' + y)
