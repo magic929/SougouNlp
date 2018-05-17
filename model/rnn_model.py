@@ -1,28 +1,32 @@
 import tensorflow as tf
 
+
 class RnnConfig(object):
     """
     Rnn configure
     """
-    def __init__(self, num_class, dim, vocab_size, seq_length=600, num_lay=2, hidden_dim=128, rnn='lstm', drop_keep_prob=0.5,
-                 learning_rate = 1e-3, batch_size=128, num_epochs = 50, print_per_batch=10, save_per_batch=10, embedding='one hot'):
-         """
-        the initialization of rnn_config
-        :param num_class: the number of categories
-        :param dim: the word embedding dim
-        :param vocab_size: the number of words in data
-        :param seq_length: the number of char each document
-        :param num_lay: the number of hidden layer 
-        :param hidden_dim: the dim of hidden layer
-        :param rnn: the kind of rnn
-        :param drop_keep_prob: the drop out value
-        :param learning_rate: the learning rate value
-        :param batch_size: the size of each batch
-        :param num_epochs: the number of epochs
-        :param print_per_batch: when output the result
-        :param save_per_batch: when save the model
-        :param embedding: the kind of word embedding
+
+    def __init__(self, num_class, dim, vocab_size, seq_length=600, num_lay=2, hidden_dim=128, rnn='lstm',
+                 drop_keep_prob=0.5, learning_rate=1e-3, batch_size=128, num_epochs=50, print_per_batch=10,
+                 save_per_batch=10, embedding='one hot'):
         """
+       the initialization of rnn_config
+       :param num_class: the number of categories
+       :param dim: the word embedding dim
+       :param vocab_size: the number of words in data
+       :param seq_length: the number of char each document
+       :param num_lay: the number of hidden layer
+       :param hidden_dim: the dim of hidden layer
+       :param rnn: the kind of rnn
+       :param drop_keep_prob: the drop out value
+       :param learning_rate: the learning rate value
+       :param batch_size: the size of each batch
+       :param num_epochs: the number of epochs
+       :param print_per_batch: when output the result
+       :param save_per_batch: when save the model
+       :param embedding: the kind of word embedding
+       """
+
         self.embedding_dim = dim
         self.seq_length = seq_length
         self.num_classes = num_class
@@ -40,7 +44,7 @@ class RnnConfig(object):
 
         self.print_per_batch = print_per_batch
         self.save_per_batch = save_per_batch
-        
+
         self.embedding = embedding
 
 
@@ -48,6 +52,7 @@ class TextRnn(object):
     """
     Rnn network
     """
+
     def __init__(self, config):
         """
         initalizate rnn net work
@@ -66,6 +71,7 @@ class TextRnn(object):
         bulid up the rnn network
         :return:
         """
+
         def lstm_cell():
             return tf.contrib.rnn.BasicLSTMCell(self.config.hidden_dim, state_is_tuple=True)
 
@@ -115,4 +121,3 @@ class TextRnn(object):
         with tf.name_scope("accuracy"):
             correnct_pred = tf.equal(tf.argmax(self.input_y, 1), self.y_pred_cls)
             self.acc = tf.reduce_mean(tf.cast(correnct_pred, tf.float32))
-

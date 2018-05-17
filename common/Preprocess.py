@@ -6,9 +6,6 @@ import getopt
 import fasttext
 from sklearn.model_selection import train_test_split
 
-
-
-
 def to_train_test(data, file1, file2, size, categories):
     """
     cut the date set to train and test 
@@ -29,13 +26,19 @@ def to_train_test(data, file1, file2, size, categories):
     write_to_file(file1, train)
     write_to_file(file2, test)
 
-
+    
 def cut_sentence(doc, file):
+    """
+    cut document to words and save it
+    :param doc -> string: path of documents
+    :param file -> string: path of words
+    :return: 
+    """
     data = read_file(doc)
     f = open(file, 'w', encoding='utf8')
     for x, y in data:
-        words = jieba.cut(y)
-        f.write(' '.join(words))
+        words = jieba.cut(x)
+        f.write(y + '\t' + ' '.join(words))
         f.flush()
 
 
