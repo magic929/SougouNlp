@@ -6,7 +6,7 @@ from datetime import timedelta
 from optparse import OptionParser
 import common.helper as helper
 from model.rnn_model import *
-
+import tensorflow.contrib.keras as kr
 
 def test(test_dir, config, model_dir):
     """
@@ -92,13 +92,25 @@ def test_one(documemt, model_dir, config):
             
 if __name__ == '__main__':
     parser = OptionParser()
+    parser.add_option('-t', '--text', dest='document', type='string', action='store', help="input news")
     (options, args) = parser.parse_args()
-    test_dir = args[0]
-    model_dir = args[1]
-    vocab_dir = args[2]
-    categories = ['体育' ,'财经', '房产', '家居', '教育', '科技', '时尚', '时政', '游戏', '娱乐']
-    _, cat_to_id  = helper.read_category(categories)
-    words, word_to_id = helper.read_vocab(vocab_dir)
-    rnn_config = RnnConfig(len(categories), 64, len(words), rnn='gru', drop_keep_prob=0.8)
-    test(test_dir, rnn_config, model_dir)
+    categories = ['体育', '财经', '房产', '家居', '教育', '科技', '时尚', '时政', '游戏', '娱乐']
+    _, cat_to_id = helper.read_category(categories)
+
+    if options.document is not None:
+        model_dir = args[0]
+        vocab_dir = args[1]
+        words, word_to_id = helper.read_vocab(vocab_dir)
+        rnn_config = RnnConfig(len(categories), 64, len(words), rnn='gru', drop_keep_prob=0.8)
+        model = TextRnn(rnn_config)
+        test_one(options.document, model_dir, rnn_config)
+
+    else:
+        test_dir = args[0]
+        model_dir = args[1]
+        vocab_dir = args[2]
+        words, word_to_id = helper.read_vocab(vocab_dir)
+        rnn_config = RnnConfig(len(categories), 64, len(words), rnn='gru', drop_keep_prob=0.8)
+        model = TextRnn(rnn_config)
+        test(test_dir, rnn_config, model_dir)
             
